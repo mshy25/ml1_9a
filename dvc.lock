@@ -1,0 +1,103 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py --out_dir data
+    deps:
+    - path: data/Pakistan_House_Price_Dataset.csv
+      hash: md5
+      md5: 862ce971c086da8903e8ecc7c8a52c92
+      size: 49522076
+    - path: src/prepare.py
+      hash: md5
+      md5: d5a1022a3d3655e5494ca7f0150f35c6
+      size: 1286
+    params:
+      params.yaml:
+        prepare.random_seed: 42
+    outs:
+    - path: data/cleaned_data.csv
+      hash: md5
+      md5: 47c583e497cfc892aeae6cd31746028b
+      size: 37894995
+  features:
+    cmd: python src/features.py --in_csv data/cleaned_data.csv --out_dir data
+    deps:
+    - path: data/cleaned_data.csv
+      hash: md5
+      md5: 47c583e497cfc892aeae6cd31746028b
+      size: 37894995
+    - path: src/features.py
+      hash: md5
+      md5: b613a0b31ceb3d7af391297dfb70a4d8
+      size: 2921
+    params:
+      params.yaml:
+        features.random_state: 42
+        features.test_size: 0.2
+    outs:
+    - path: data/X_test.npy
+      hash: md5
+      md5: 66ca906ec575023cb5ff3fd0fdbadc43
+      size: 3781128
+    - path: data/X_train.npy
+      hash: md5
+      md5: 87686f844249c63ee5e9ae13feb0d040
+      size: 15123976
+    - path: data/y_test.npy
+      hash: md5
+      md5: 75509f88e12486106d927d530941674b
+      size: 199128
+    - path: data/y_train.npy
+      hash: md5
+      md5: f13d8ffb9f710c7f0a9a24b9b253e2a2
+      size: 796120
+  train:
+    cmd: python src/train.py --data_dir data --model_out model.pkl
+    deps:
+    - path: data/X_train.npy
+      hash: md5
+      md5: 87686f844249c63ee5e9ae13feb0d040
+      size: 15123976
+    - path: data/y_train.npy
+      hash: md5
+      md5: f13d8ffb9f710c7f0a9a24b9b253e2a2
+      size: 796120
+    - path: src/train.py
+      hash: md5
+      md5: ad343464afe3624d1eb0d113216948cc
+      size: 1535
+    params:
+      params.yaml:
+        train.max_depth: 10
+        train.n_estimators: 100
+        train.random_state: 42
+    outs:
+    - path: model.pkl
+      hash: md5
+      md5: 4dc757d75f75d1dba278e7285e298435
+      size: 10989313
+  evaluate:
+    cmd: python src/evaluate.py --data_dir data --model model.pkl --out 
+      metrics/eval.json
+    deps:
+    - path: data/X_test.npy
+      hash: md5
+      md5: 66ca906ec575023cb5ff3fd0fdbadc43
+      size: 3781128
+    - path: data/y_test.npy
+      hash: md5
+      md5: 75509f88e12486106d927d530941674b
+      size: 199128
+    - path: model.pkl
+      hash: md5
+      md5: 4dc757d75f75d1dba278e7285e298435
+      size: 10989313
+    - path: src/evaluate.py
+      hash: md5
+      md5: 8ead1ff167162d166e1fbf72a935761b
+      size: 1643
+    outs:
+    - path: metrics/eval.json
+      hash: md5
+      md5: 467ef86509d7d466a39fc78befa66a4d
+      size: 97

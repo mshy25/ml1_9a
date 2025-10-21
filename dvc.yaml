@@ -1,15 +1,18 @@
 stages:
   prepare:
     cmd: python src/prepare.py --out_dir data
+    deps:
+      - data/Pakistan_House_Price_Dataset.csv
+      - src/prepare.py
     outs:
-      - data/iris.csv
+      - data/cleaned_data.csv
     params:
       - prepare.random_seed
 
   features:
-    cmd: python src/features.py --in_csv data/iris.csv --out_dir data --test_size ${features.test_size} --random_state ${features.random_state}
+    cmd: python src/features.py --in_csv data/cleaned_data.csv --out_dir data
     deps:
-      - data/iris_dataset.csv
+      - data/cleaned_data.csv
       - src/features.py
     outs:
       - data/X_train.npy
@@ -40,7 +43,6 @@ stages:
       - data/X_test.npy
       - data/y_test.npy
       - src/evaluate.py
-    outs:
-      - metrics/eval.json
-    params:
-      - evaluate.average
+    metrics:
+      - metrics/eval.json:
+          cache: false
