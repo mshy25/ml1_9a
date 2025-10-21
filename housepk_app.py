@@ -42,6 +42,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 def index():
     return render_template("index.html", feature_meta=feature_meta)
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """User login route"""
@@ -84,6 +85,18 @@ def predict():
     except:
         pred_fmt = str(pred)
     return render_template("result.html", prediction=pred_fmt)
+
+@app.route("/dashboard", methods=["GET"])
+def dashboard():
+    """Admin dashboard with statistics"""
+    stats = {
+        "total_predictions": 150,
+        "active_users": 45,
+        "avg_price": 12500000
+    }
+    print("Dashboard accessed")
+    return f"<h1>Dashboard</h1><p>Predictions: {stats['total_predictions']}</p><p>Users: {stats['active_users']}</p>"
+
 
 # Optional JSON API
 @app.route("/api/predict", methods=["POST"])
