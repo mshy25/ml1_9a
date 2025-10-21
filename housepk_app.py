@@ -42,6 +42,16 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 def index():
     return render_template("index.html", feature_meta=feature_meta)
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """User login route"""
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        print(f"Login attempt by: {username}")
+        return f"Welcome {username}! Authentication successful."
+    return "<h1>Login Page</h1><form method='POST'><input name='username' placeholder='Username'><input name='password' type='password' placeholder='Password'><button>Login</button></form>"
+
 @app.route("/predict", methods=["POST"])
 def predict():
     # build input vector in same order as feature_list
