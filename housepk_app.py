@@ -101,7 +101,11 @@ def dashboard():
 # Optional JSON API
 @app.route("/api/predict", methods=["POST"])
 def api_predict():
+    """JSON API endpoint with enhanced logging"""
+    import datetime
     data = request.json
+    print(f"[{datetime.datetime.now()}] API Request received with {len(data) if data else 0} fields")
+
     if not data:
         return {"error": "JSON payload required"}, 400
     row = []
