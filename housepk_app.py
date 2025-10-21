@@ -42,38 +42,16 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 def index():
     return render_template("index.html", feature_meta=feature_meta)
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    # build input vector in same order as feature_list
-    row = []
-    for feat in feature_list:
-        field = feature_field_map[feat]
-        val = request.form.get(field)
-        if val is None:
-            return f"Missing value for {feat}", 400
-        if feat in label_encoders:
-            # safe: value should be one of label_encoders[feat].classes_
-            le = label_encoders[feat]
-            try:
-                encoded = int(le.transform([val])[0])
-            except Exception as e:
-                return f"Unexpected categorical value for {feat}: {val}", 400
-            row.append(encoded)
-        else:
-            # numeric
-            try:
-                row.append(float(val))
-            except:
-                return f"Invalid numeric value for {feat}: {val}", 400
-
-    X = np.array(row).reshape(1, -1)
-    pred = model.predict(X)[0]
-    # format prediction
-    try:
-        pred_fmt = round(float(pred), 2)
-    except:
-        pred_fmt = str(pred)
-    return render_template("result.html", prediction=pred_fmt)
+@app.route("/dashboard", methods=["GET"])
+def dashboard():
+    """Admin dashboard with statistics"""
+    stats = {
+        "total_predictions": 150,
+        "active_users": 45,
+        "avg_price": 12500000
+    }
+    print("Dashboard accessed")
+    return f"<h1>Dashboard</h1><p>Predictions: {stats['total_predictions']}</p><p>Users: {stats['active_users']}</p>"
 
 # Optional JSON API
 @app.route("/api/predict", methods=["POST"])
