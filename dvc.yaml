@@ -19,6 +19,9 @@ stages:
       - data/X_test.npy
       - data/y_train.npy
       - data/y_test.npy
+      - models/model_features.pkl
+      - models/label_encoders.pkl
+      - models/feature_field_map.pkl
     params:
       - features.test_size
       - features.random_state
@@ -31,6 +34,7 @@ stages:
       - src/train.py
     outs:
       - model.pkl
+      - models/house_price_model.pkl
     params:
       - train.n_estimators
       - train.max_depth
